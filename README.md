@@ -1,57 +1,45 @@
-# WDD231 — Web Development (BYU Labs)
+# Anistream
 
-Welcome to the BYULabs wdd231 repository. This repo contains course materials, examples, and assignments for WDD231 (introductory web development). It's built using HTML, CSS, and JavaScript.
+A lightweight static anime catalog web app — browsable grid, search, schedule, and details pages.
 
-## Repository overview
+## Features
 
-- Languages: HTML, CSS, JavaScript
-- Purpose: Teaching fundamentals of web development (structure, styling, interactivity, and responsive design)
+- Browse anime catalog with a responsive grid
+- Search and header search across titles
+- Episode schedule view
+- Individual anime detail pages
 
-## What you'll find here
+## Project Structure
 
-- Example pages and exercises demonstrating HTML structure and semantics
-- CSS files showing layout, responsive techniques, and design patterns
-- JavaScript examples for DOM manipulation, events, and basic interactivity
-- Assets such as images and fonts used in course content
+- `index.html` — homepage / hero
+- `browse.html` — catalog browsing
+- `search.html` — search results
+- `schedule.html` — schedule view
+- `anime-details.html` — detail page template
+- `scripts/` — ES module JavaScript files (e.g. `main.mjs`, `api.mjs`)
+- `styles/` — CSS files
+- `images/` — static assets
 
-## Getting started
+## Usage
 
-1. Clone the repository:
+Open `index.html` directly in a browser (for simple viewing), or serve the folder with a local static server for module support:
 
-   git clone https://github.com/BYULabs/wdd231.git
+```bash
+# Python 3
+python3 -m http.server 8000
 
-2. Open the example HTML files in your browser (e.g., index.html) or serve the folder using a simple static server:
+# Then open http://localhost:8000 in your browser
+```
 
-   - Using Python 3: `python -m http.server 8000`
-   - Using VS Code: Live Server extension
+## Development
 
-3. Edit files in your preferred editor and refresh the browser to see changes.
-
-## Suggested structure
-
-- index.html — landing or example page
-- /css — stylesheets
-- /js — JavaScript files
-- /assets — images, fonts, and other static assets
-- /assignments — exercises and student submissions (if present)
-
-Note: The exact structure may vary. Explore the repo to see current organization.
+- JavaScript modules live under `scripts/` and are imported by the HTML pages.
+- Edit files and refresh the browser; use a local server to avoid CORS/module issues.
 
 ## Contributing
 
-Contributions are welcome. Typical contributions include:
+Feel free to open issues or pull requests. Add a `LICENSE` file if you want to set a license.
 
-- Fixing typos in lessons or examples
-- Improving accessibility and semantic markup
-- Updating styles to use modern CSS techniques
-- Adding comments or explanations to JavaScript examples
+## Notes
 
-If you'd like to contribute, open a pull request or create an issue describing the change.
-
-## License
-
-If this repository does not yet include a LICENSE file, please add one or check with the course maintainers about licensing. A common choice for course materials is the Creative Commons Attribution (CC BY) or an MIT license for code.
-
-## Contact
-
-For questions about the course materials or repository, reach out to the BYULabs maintainers.
+- No build step is required — this is a static site using native ES modules.

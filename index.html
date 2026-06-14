@@ -1,119 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sebastián's WDD 231 home page displaying web development certificate corses">
+    
+    <!-- SEO Meta Tags -->
+    <title>AniStream — Discover & Track Your Favorite Anime</title>
+    <meta name="description" content="AniStream - Discover trending anime, browse current seasons, view upcoming releases, and build your personal watchlist. Your ultimate anime discovery platform.">
     <meta name="author" content="Sebastián Iturralde">
-    <title>Sebastián | Web Development</title>
-
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Sebastián | Web Development">
-    <meta property="og:description"
-        content="Sebastián's WDD 231 home page displaying web development certificate courses">
-    <meta property="og:image" content="images/og-image.jpg">
-    <meta property="og:url" content="https://BYULabs.github.io/wdd231/">
-
+    <meta name="robots" content="index, follow">
     <link rel="icon" href="favicon.ico">
 
-    <!-- Google Font -->
+    <!-- Open Graph / Facebook / Discord (Social Media Metadata) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AniStream — Anime Discovery Platform">
+    <meta property="og:description" content="Search, discover, and track currently streaming or upcoming anime with AniStream.">
+    <meta property="og:url" content="https://byulabs.github.io/wdd231/final/index.html">
+    <meta property="og:image" content="https://byulabs.github.io/wdd231/final/images/anistream-og-banner.jpg">
+    <meta property="og:site_name" content="AniStream">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AniStream — Anime Discovery Platform">
+    <meta name="twitter:description" content="Search, discover, and track currently streaming or upcoming anime with AniStream.">
+    <meta name="twitter:image" content="https://byulabs.github.io/wdd231/final/images/anistream-og-banner.jpg">
+
+    <!-- Performance & Network Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lato:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://api.jikan.moe">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles/normalize.css">
+    <!-- Typography & Stylesheets -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/larger.css">
 
-    <!-- Scripts -->
-    <script src="scripts/navigation.js" defer></script>
-    <script src="scripts/date.js" defer></script>
-    <script src="scripts/scripts.js" type="module"></script>
+    <!-- Application Initialization Orchestrator -->
+    <script type="module" src="scripts/main.mjs"></script>
 </head>
-
 <body>
+
+    <!-- ============ HEADER / NAVIGATION ============ -->
     <header>
-        <div class="header-inner">
-            <img src="images/byu-cougars-logo.svg" alt="BYU Cougars Logo" width="80" height="80">
-            <div class="site-heading">
-                <span>WDD 231 Home</span>
-                <p>Sebastián Iturralde</p>
+        <div class="header-container">
+
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <span class="logo-text">Ani<span class="logo-accent">Stream</span></span>
+            </a>
+
+            <!-- Center Nav Links (Desktop) -->
+            <nav class="desktop-nav">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="browse.html" class="nav-link">Browse Season</a>
+                <a href="schedule.html" class="nav-link">Schedule</a>
+            </nav>
+
+            <!-- Right Side: Search Button -->
+            <div class="search-container">
+                <button class="search-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                    <span>Search anime...</span>
+                </button>
             </div>
-            <button id="ham-btn" class="hamburger"></button>
+
+            <!-- Mobile: Search + Hamburger -->
+            <div class="mobile-controls">
+                <button class="mobile-search-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-md"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </button>
+                <button id="menuToggle" class="mobile-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-lg"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+                </button>
+            </div>
         </div>
     </header>
 
-    <nav id="nav-bar" class="navigation">
-        <ul>
-            <li><a href="index.html" class="current">Home</a></li>
-            <li><a href="chamber/">Chamber Project</a></li>
-            <li><a href="final/">Final Project</a></li>
-        </ul>
+    <!-- Mobile Slide Menu -->
+    <div id="mobileOverlay"></div>
+    <nav id="mobileMenu" class="mobile-menu">
+        <button id="mobileMenuClose" class="mobile-menu-close" aria-label="Close mobile menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-lg"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <a href="index.html">Home</a>
+        <a href="browse.html">Browse Season</a>
+        <a href="schedule.html">Schedule</a>
     </nav>
 
+    <!-- ============ SECTION 1: HERO BANNER ============ -->
     <main>
-        <h1>Home</h1>
-        <section>
-            <h2>About Me</h2>
-            <p>Hi, I'm Sebastián Iturralde, from Ibarra, Ecuador, currently based in Quito. I began this journey as a
-                marketing instructor at ITQ, where I was encouraged to pursue certifications — and discovered an
-                unexpected passion for programming along the way.</p>
-            <p>That discovery led me to BYU Pathway's Web and Computer Programming Certificate, where I've studied
-                Python, C#, HTML, CSS, and JavaScript. I'm now finishing WDD 231 - Frontend Web Development I, the final
-                course of the certificate.</p>
-            <p>I'm a curious, self-driven learner. Welcome to my portfolio — explore my projects and see what I've been
-                building.</p>
-        </section>
-        <section>
-            <h2>Student Photo</h2>
-            <img src="images/profile-image.jpg"
-                alt="Portrait of Sebastián Iturralde wearing a white sun hat and blue tropical shirt, standing in a colorful flower garden outdoors.">
+        <section class="hero-section">
+            <!-- Hero Background Image -->
+            <div class="hero-image-wrapper">
+                <img src="https://cdn.myanimelist.net/images/anime/1133/156346l.jpg" alt="Featured Anime">
+            </div>
+
+            <!-- Bottom fade -->
+            <div class="hero-fade-bottom"></div>
+            <!-- Left fade for text readability -->
+            <div class="hero-fade-left"></div>
+
+            <!-- Hero Content -->
+            <div class="hero-content">
+                <div class="hero-text">
+
+                    <!-- Current Season Tag -->
+                    <div class="season-tag">
+                        <span class="glow-dot">●</span>
+                        <span class="season-tag-text">Anticipated Upcoming Hype</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="hero-title">Saga of Tanya the Evil II</h1>
+
+                    <div class="hero-meta-row">
+                        <span class="hero-meta-item">TV Series</span>
+                        <span class="hero-meta-item">Action, Military, Fantasy</span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="hero-description">Second season of Youjo Senki.</p>
+                    <!-- CTA Button -->
+                    <div class="hero-actions">
+                        <button class="cta-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
+                            View Details
+                        </button>
+                        
+                    </div>
+                </div>
+
+                <div class="hero-poster-box">
+                    <img src="https://cdn.myanimelist.net/images/anime/1133/156346l.jpg" alt="Featured Poster Portrait">
+                </div>
+
+            </div>
         </section>
 
-        <section>
-            <h2>Web and Computer Programming Certificate Courses</h2>
-            <div class="filter-buttons">
-                <button id="all-btn" class="active">All</button>
-                <button id="cse-btn">CSE</button>
-                <button id="wdd-btn">WDD</button>
+        <!-- ============ SECTION 2: LATEST EPISODE DROPS ============ -->
+        <section class="latest-section">
+            <div class="latest-container">
+            
+            <!-- Section Header -->
+            <div class="section-header">
+                <div class="section-line"></div>
+                <h2 class="section-title">Trending This Season</h2>
             </div>
-            <div class="courses-container" id="courses-container"></div>
-            <p id="total-credits"></p>
+
+            <!-- Anime Grid -->
+            <div id="animeGrid" class="anime-grid">
+                <!-- Cards injected by JS -->
+            </div>
+
+            </div>
         </section>
     </main>
 
-    <!-- Course Details Modal -->
-    <dialog id="course-modal" class="course-modal">
-        <div class="modal-content">
-            <button class="close-modal-btn" aria-label="Close modal">&times;</button>
-            <div id="modal-course-details"></div>
-        </div>
-    </dialog>
-
+    <!-- ============ FOOTER ============ -->
     <footer>
-        <div class="social">
-            <a href="https://github.com/BYULabs/" target="_blank" rel="noreferrer">
-                <img src="images/github.svg" alt="Sebastián Iturralde GitHub profile" width="24" height="24">
+        <div class="footer-container">
+            <a href="#" class="footer-logo">
+                Ani<span class="footer-logo-accent">Stream</span>
             </a>
-
-            <a href="https://www.linkedin.com/in/ituSebastián/" target="_blank" rel="noreferrer">
-                <img src="images/linkedin.svg" alt="Sebastián Iturralde LinkedIn profile" width="24" height="24">
-            </a>
-
-            <a href="https://www.behance.net/ituSebastián/" target="_blank" rel="noreferrer">
-                <img src="images/behance.svg" alt="Sebastián Iturralde Behance portfolio" width="24" height="24">
-            </a>
-
-            <a href="https://www.facebook.com/itulabs/" target="_blank" rel="noreferrer">
-                <img src="images/facebook.svg" alt="Sebastián Iturralde Facebook page" width="24" height="24">
-            </a>
+            <p class="footer-text">&copy; 2026 AniStream. All rights reserved.</p>
         </div>
-        <p>&copy; <span id="current-year"></span> Sebastián Iturralde | Quito, Ecuador</p>
-        <p>Last Modification: <span id="last-modified"></span></p>
     </footer>
 </body>
-
 </html>
