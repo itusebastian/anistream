@@ -16,7 +16,7 @@ export function getAnimeTitle(anime) {
 }
 
 /**
- * Safely digs deep into structural nested Jikan API imagery arrays to extract target paths.
+ * Resolves the poster URL from normalized anime data.
  */
 export function getAnimeImageUrl(anime) {
     return anime?.images?.jpg?.image_url || '';

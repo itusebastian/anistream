@@ -1,8 +1,8 @@
-import { fetchCurrentAnime } from "./api.mjs";
+import { fetchAnimeSchedule } from "./api.mjs";
 import { createGenreTagsHTML, escapeHTML, getAnimeImageUrl, getAnimeTitle, removeDuplicates, truncateString } from "./utils.mjs";
 
 let weeklyCachedData = null;
-let currentActiveDay = 'monday'; // Jikan uses full lowercase strings ('monday', 'tuesday', etc.)
+let currentActiveDay = 'monday';
 
 /**
  * Initializes the weekly schedule page component.
@@ -16,7 +16,7 @@ export async function initAnimeSchedule() {
 
     try {
         // Fetch raw weekly data array
-        const rawScheduleData = await fetchCurrentAnime();
+        const rawScheduleData = await fetchAnimeSchedule();
         
         // Group the API elements by day
         weeklyCachedData = groupScheduleByDay(rawScheduleData);
@@ -34,7 +34,7 @@ export async function initAnimeSchedule() {
 }
 
 /**
- * Groups raw data from Jikan into explicit day buckets based on broadcast properties.
+ * Groups normalized airing entries into day buckets based on broadcast properties.
  */
 function groupScheduleByDay(dataArray) {
     const buckets = {
@@ -43,7 +43,7 @@ function groupScheduleByDay(dataArray) {
     };
 
     // Remove duplicate anime items from the API response before bucket processing
-    const uniqueAnimeList = removeDuplicates(dataArray, anime => anime.mal_id);
+    const uniqueAnimeList = removeDuplicates(dataArray, anime => `${anime.id}_${anime.broadcast?.day}`);
 
     uniqueAnimeList.forEach(anime => {
         // Extract the day identifier provided by the API (e.g., "Mondays")
@@ -129,7 +129,7 @@ function renderScheduleDay(dayKey) {
 
         const card = document.createElement('div');
         card.className = 'anime-card';
-        card.setAttribute('data-mal-id', anime.mal_id);
+        card.setAttribute('data-anilist-id', anime.id);
 
         card.innerHTML = `
           <div class="anime-card-image-wrapper">
@@ -158,7 +158,7 @@ function renderScheduleDay(dayKey) {
 
         // Redirect interaction to detail page mirroring the dashboard grid configuration
         card.addEventListener('click', () => {
-            window.location.href = `anime-details.html?id=${anime.mal_id}`;
+            window.location.href = `anime-details.html?anilistId=${anime.id}`;
         });
 
         grid.appendChild(card);

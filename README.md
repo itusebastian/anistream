@@ -1,6 +1,6 @@
 # Anistream
 
-A static anime catalog built with Astro: seasonal browsing, search, weekly broadcast schedules, and anime details. Data is fetched from the public Jikan API in the browser; no backend or API key is required.
+A static anime discovery site built with Astro: seasonal browsing, search, weekly broadcast schedules, and anime details. Data is fetched from the public AniList GraphQL API in the browser; no backend, API key, or login is required.
 
 ## Development
 
@@ -19,7 +19,7 @@ npm run build
 npm run preview
 ```
 
-The build generates deployable static files in `dist/`, preserving the existing `index.html`, `browse.html`, `search.html`, `schedule.html`, and `anime-details.html?id=...` URLs.
+The build generates deployable static files in `dist/`, preserving the existing HTML page routes. New detail links use `anime-details.html?anilistId=...`. Old `anime-details.html?id=...` links are treated as MyAnimeList IDs and resolved through AniList's `idMal` field.
 
 ## Project Structure
 
@@ -44,7 +44,21 @@ Code between `---` markers runs during the static build, not in the visitor's br
 
 The shared design remains in the global stylesheets. When adding a self-contained component, its own `<style>` block is scoped by Astro by default. Prefer global styles for shared design rules and scoped styles for component-specific presentation.
 
-Jikan is still fetched in the browser. Moving a fetch into Astro frontmatter would instead create a snapshot at build time; it would need scheduled rebuilds and an outage fallback. An Astro template does not rerender when browser data arrives, so live search and result cards remain browser-rendered. React or another framework is optional, not required for these interactions.
+AniList is fetched in the browser. An Astro template does not rerender when browser data arrives, so live search and result cards remain browser-rendered. React or another framework is optional, not required for these interactions. Avoid bulk data collection or using AniList as a backup/storage service; consult its terms before designing offline snapshots.
+
+## AniList Integration
+
+All API operations send a JSON `POST` to `https://graphql.anilist.co` with a GraphQL `query` and `variables`. `scripts/api.mjs` selects only the fields needed by the pages and normalizes media into the existing renderer contract: scores become 0-10 values, genres become named objects, HTML descriptions become plain text using parse5, and supported YouTube trailers become embed URLs.
+
+Native AniList IDs and MyAnimeList IDs are not interchangeable. Cards, deduplication, and new links use the native `id`. The normalized `mal_id` is retained only as external identity information. Cache keys use an `anilist_` namespace, so old Jikan payloads cannot be mistaken for AniList records.
+
+Seasonal, upcoming, and search views request at most 50 titles per query. The schedule paginates airing entries for the current Monday-Sunday week in Japan and excludes adult titles. All broadcast dates and times use `Asia/Tokyo` (JST), rather than the visitor's local timezone. Multiple releases of the same anime on different days remain visible.
+
+The client spaces network requests by at least 2.1 seconds to respect the documented degraded limit of 30 requests per minute. It honors `Retry-After` and `X-RateLimit-Reset`, retries HTTP 429/server errors up to two times, and reports GraphQL errors even when HTTP succeeds. Limits are shared with other clients using the same public IP, so throttling can still occur.
+
+Lists and schedules are cached for 15 minutes and details for one hour. These are optional short-lived response caches, not an offline database. No account tracking, authentication, or mutations are implemented.
+
+See the [API guide](https://docs.anilist.co/guide/introduction), [rate limits](https://docs.anilist.co/guide/rate-limiting), and [terms of use](https://docs.anilist.co/guide/terms-of-use). AniList prohibits competing non-complementary anime list/tracker services, hoarding, and backup/storage uses. Commercial use above $150/month requires a license. Review those restrictions before adding tracking features or monetizing the site.
 
 ## GitHub Pages
 
@@ -63,8 +77,8 @@ BASE_PATH=/anistream npm run preview
 
 ## API Troubleshooting
 
-The API client caches lists for two hours and details for 24 hours, deduplicates concurrent requests, spaces network requests, retries HTTP 429 and server errors, and times out individual requests after 15 seconds. Browser storage is optional and cannot block rendering.
+Individual requests time out after 15 seconds. Browser storage is optional and cannot block rendering. Identical in-flight requests are deduplicated.
 
-If data does not load, inspect the browser's Network and Console panels for requests to `https://api.jikan.moe/v4`. Errors now distinguish HTTP failures from an unreachable API or timeout. Check Jikan's service status and browser extensions, DNS, VPN, or firewall restrictions. A static GitHub Pages site cannot bypass an upstream outage or browser network restrictions.
+If data does not load, inspect the browser's Network and Console panels for `POST` requests to `https://graphql.anilist.co`. Check the JSON response's `errors` array as well as its HTTP status. HTTP 429 means rate limiting; wait for the indicated reset before reloading. Also check browser extensions, DNS, VPN, and firewall restrictions. GitHub Pages cannot bypass an upstream outage or browser network restrictions.
 
-Browse and schedule currently use the first page of the seasonal endpoint, not the complete catalog. Broadcast times are shown in JST.
+The previous Jikan public endpoint has been replaced following its announced October 1, 2026 shutdown.

@@ -22,7 +22,7 @@ export async function initAnimeGrid() {
         }
 
         // Remove duplicate anime items from the API response before rendering
-        const uniqueAnimeList = removeDuplicates(animeList, anime => anime.mal_id);
+        const uniqueAnimeList = removeDuplicates(animeList, anime => anime.id);
 
         // Limit the display to just the top 12 UNIQUE anime items for the grid
         const topStreamingAnime = uniqueAnimeList.slice(0, 12);
@@ -41,7 +41,7 @@ export async function initAnimeGrid() {
             // Create the wrapper element for the individual anime card
             const card = document.createElement('div');
             card.className = 'anime-card';
-            card.setAttribute('data-mal-id', anime.mal_id); // Store MyAnimeList ID for potential click events
+            card.setAttribute('data-anilist-id', anime.id);
 
             // Inject the internal HTML structure, ensuring all dynamic user/API text is escaped for XSS protection
             card.innerHTML = `
@@ -72,11 +72,11 @@ export async function initAnimeGrid() {
 
             // Redirect to detail template when the card is clicked
             card.addEventListener('click', () => {
-                window.location.href = `anime-details.html?id=${anime.mal_id}`;
+                window.location.href = `anime-details.html?anilistId=${anime.id}`;
             })
 
             // Pre-cache individual profile tokens to localStorage so the detailed layout works instantly
-            setCachedData(`anime_detail_${anime.mal_id}`, anime);
+            setCachedData(`anilist_detail_${anime.id}`, anime);
 
             // Append the fully constructed card to the grid container
             grid.appendChild(card);

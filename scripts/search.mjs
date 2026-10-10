@@ -16,11 +16,13 @@ export function initAnimeSearch() {
 
     // Guard Clause: Exit cleanly if search components are absent on the current screen
     if (!searchInput || !animeGrid) return;
+    let searchVersion = 0;
 
     /**
      * Executes queries via live fetch operations and resolves loading states.
      */
     async function performSearch() {
+        const requestVersion = ++searchVersion;
         const query = searchInput.value.trim();
 
         if (query.length > 0) {
@@ -41,6 +43,7 @@ export function initAnimeSearch() {
 
         try {
             const results = await searchAnimeCatalog(query);
+            if (requestVersion !== searchVersion) return;
 
             zeroState.classList.replace('flex', 'hidden');
 
@@ -57,6 +60,7 @@ export function initAnimeSearch() {
                 renderCards(results);
             }
         } catch (error) {
+            if (requestVersion !== searchVersion) return;
             console.error("Search tracking failure:", error);
             zeroState.classList.replace('hidden', 'flex');
             animeGrid.classList.add('hidden');
@@ -108,8 +112,8 @@ export function initAnimeSearch() {
 
             // Redirects to page details and caches tokens locally for performance gains
             card.addEventListener('click', () => {
-                setCachedData(`anime_detail_${anime.mal_id}`, anime);
-                window.location.href = `anime-details.html?id=${anime.mal_id}`;
+                setCachedData(`anilist_detail_${anime.id}`, anime);
+                window.location.href = `anime-details.html?anilistId=${anime.id}`;
             });
 
             animeGrid.appendChild(card);
