@@ -1,0 +1,57 @@
+---
+interface Props {
+    activePage?: 'home' | 'browse' | 'schedule';
+}
+
+const { activePage } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const links = [
+    { page: 'home', href: `${base}/index.html`, label: 'Home' },
+    { page: 'browse', href: `${base}/browse.html`, label: 'Browse Season' },
+    { page: 'schedule', href: `${base}/schedule.html`, label: 'Schedule' }
+];
+---
+<header>
+    <div class="header-container">
+        <a href={`${base}/index.html`} class="logo">
+            <span class="logo-text">Ani<span class="logo-accent">Stream</span></span>
+        </a>
+        <nav class="desktop-nav" aria-label="Main navigation">
+            {links.map(link => (
+                <a href={link.href} class:list={['nav-link', { active: activePage === link.page }]}
+                    aria-current={activePage === link.page ? 'page' : undefined}>{link.label}</a>
+            ))}
+        </nav>
+        <div class="search-container">
+            <button class="search-btn" type="button" aria-label="Search anime">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                <span>Search anime...</span>
+            </button>
+        </div>
+        <div class="mobile-controls">
+            <button class="mobile-search-btn" type="button" aria-label="Search anime">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-md" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            </button>
+            <button id="menuToggle" class="mobile-btn" type="button" aria-label="Open menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-lg" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+            </button>
+        </div>
+    </div>
+</header>
+<div id="mobileOverlay"></div>
+<nav id="mobileMenu" class="mobile-menu" aria-label="Mobile navigation">
+    <button id="mobileMenuClose" class="mobile-menu-close" type="button" aria-label="Close mobile menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-lg" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    {links.map(link => (
+        <a href={link.href} aria-current={activePage === link.page ? 'page' : undefined}>{link.label}</a>
+    ))}
+</nav>
+
+<script>
+    import { initMobileMenu } from '../../scripts/mobile-menu.mjs';
+    import { initHeaderSearch } from '../../scripts/header-search.mjs';
+
+    initMobileMenu();
+    initHeaderSearch();
+</script>

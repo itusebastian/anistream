@@ -1,0 +1,32 @@
+---
+import PageHead from '../components/PageHead.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import '../../styles/base.css';
+import '../../styles/larger.css';
+
+interface Props {
+    title: string;
+    description: string;
+    activePage?: 'home' | 'browse' | 'schedule';
+    socialImage?: string;
+    ogType?: 'website' | 'video.tv_show';
+    mainClass?: string;
+}
+
+const { activePage, mainClass, ...metadata } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <PageHead {...metadata} />
+        <slot name="head" />
+    </head>
+    <body>
+        <SiteHeader activePage={activePage} />
+        <main class={mainClass}>
+            <slot />
+        </main>
+        <SiteFooter />
+    </body>
+</html>
