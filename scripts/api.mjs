@@ -1,5 +1,43 @@
 import { JIKAN_BASE_URL } from "./config.mjs";
 
+const pendingRequests = new Map();
+let requestQueue = Promise.resolve();
+let nextRequestTime = 0;
+
+const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+async function requestPayload(endpoint, errorMessage) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+        await wait(Math.max(0, nextRequestTime - Date.now()));
+        nextRequestTime = Date.now() + 1100;
+
+        let response;
+        try {
+            response = await fetch(`${JIKAN_BASE_URL}${endpoint}`, {
+                signal: AbortSignal.timeout(15000)
+            });
+        } catch (error) {
+            throw new Error(`${errorMessage}: API unreachable or request timed out. Check your connection and Jikan status.`, { cause: error });
+        }
+
+        if ((response.status === 429 || response.status >= 500) && attempt < 2) {
+            const retryAfter = Number(response.headers.get('Retry-After'));
+            await wait(Math.min(30000, Math.max(1100 * (attempt + 1), retryAfter * 1000 || 0)));
+            continue;
+        }
+
+        if (!response.ok) {
+            throw new Error(`${errorMessage}: HTTP ${response.status}`);
+        }
+
+        const json = await response.json();
+        if (!json || typeof json !== 'object' || !('data' in json) || json.data == null) {
+            throw new Error(`${errorMessage}: invalid API response`);
+        }
+        return json.data;
+    }
+}
+
 // Cache Duration configuration (in milliseconds)
 const CACHE_TIMES = {
     LISTS: 2 * 60 * 60 * 1000,    // 2 Hours for home page lists (airing / upcoming)
@@ -36,7 +74,7 @@ function getCachedData(key) {
 /**
  * Commits a fresh data payload wrapper to localStorage with a timestamp marker.
  */
-function setCachedData(key, data) {
+export function setCachedData(key, data) {
     try {
         const cachePayload = {
             data: data,
@@ -51,29 +89,25 @@ function setCachedData(key, data) {
 /**
  * Helper function to handle boilerplate fetch operations and error responses.
  */
-async function fetchJikanData(endpoint, errorMessage, cacheKey) {
+function fetchJikanData(endpoint, errorMessage, cacheKey) {
     // 1. Check if valid cache data exists before firing a network operation
     const localData = getCachedData(cacheKey);
     if (localData) {
-        return localData;
+        return Promise.resolve(localData);
     }
+    if (pendingRequests.has(cacheKey)) return pendingRequests.get(cacheKey);
 
-    // 2. Perform fallback asynchronous HTTP fetch request if cache misses
-    const response = await fetch(`${JIKAN_BASE_URL}${endpoint}`);
-    
-    if (!response.ok) {
-        throw new Error(errorMessage);
-    }
+    const request = requestQueue.then(async () => {
+        const cleanPayload = await requestPayload(endpoint, errorMessage);
+        if (!Array.isArray(cleanPayload) || cleanPayload.length > 0) {
+            setCachedData(cacheKey, cleanPayload);
+        }
+        return cleanPayload;
+    }).finally(() => pendingRequests.delete(cacheKey));
 
-    const json = await response.json();
-    const cleanPayload = json.data || [];
-
-    // 3. Update the localized storage track records with the fresh payload
-    if (cleanPayload && (!Array.isArray(cleanPayload) || cleanPayload.length > 0)) {
-        setCachedData(cacheKey, cleanPayload);
-    }
-    
-    return cleanPayload;
+    pendingRequests.set(cacheKey, request);
+    requestQueue = request.catch(() => {});
+    return request;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { searchAnimeCatalog } from "./api.mjs";
+import { searchAnimeCatalog, setCachedData } from "./api.mjs";
 import { createGenreTagsHTML, escapeHTML, getAnimeImageUrl, getAnimeTitle, truncateString } from "./utils.mjs";
 
 /**
@@ -108,7 +108,7 @@ export function initAnimeSearch() {
 
             // Redirects to page details and caches tokens locally for performance gains
             card.addEventListener('click', () => {
-                localStorage.setItem(`anime_detail_${anime.mal_id}`, JSON.stringify({ data: anime, timestamp: Date.now() }));
+                setCachedData(`anime_detail_${anime.mal_id}`, anime);
                 window.location.href = `anime-details.html?id=${anime.mal_id}`;
             });
 
