@@ -26,7 +26,6 @@ export async function initBrowseCatalog() {
   let liveAnimeData = [];
 
   try {
-    // 1. Fetch data from the Jikan/MAL API wrapper
     const rawAnimeData = await fetchCurrentAnime();
 
     if (!rawAnimeData || !rawAnimeData.length) {
@@ -34,7 +33,7 @@ export async function initBrowseCatalog() {
     }
 
     // 2. Remove duplicate anime items from the API response before rendering
-    liveAnimeData = removeDuplicates(rawAnimeData, anime => anime.mal_id);
+    liveAnimeData = removeDuplicates(rawAnimeData, anime => anime.id);
 
     // 3. Event Binding: Trigger the filtering pipeline whenever a dropdown changes
     filterSource.addEventListener('change', applyFilters);
@@ -75,7 +74,7 @@ export async function initBrowseCatalog() {
       
       // Construct the internal card layout
       card.innerHTML = `
-        <a href="anime-details.html?id=${anime.mal_id}" class="anime-card-link-wrapper">
+        <a href="anime-details.html?anilistId=${anime.id}" class="anime-card-link-wrapper">
           <div class="anime-card-image-wrapper">
             <img
               src="${imageUrl}"
@@ -103,7 +102,7 @@ export async function initBrowseCatalog() {
 
       // Optimization: Cache full data payloads to LocalStorage.
       // This prevents needing another network request when navigating to the details page.
-      setCachedData(`anime_detail_${anime.mal_id}`, anime);
+      setCachedData(`anilist_detail_${anime.id}`, anime);
       
       grid.appendChild(card);
     });
@@ -149,8 +148,7 @@ export async function initBrowseCatalog() {
       // Numerical sort: highest rating/score first
       filtered.sort((a, b) => (b.score || 0) - (a.score || 0));
     } else if (sort === 'popular') {
-      // Numerical sort: lowest popularity ranking number first (Rank #1 is most popular)
-      filtered.sort((a, b) => (a.popularity || 9999) - (b.popularity || 9999));
+      filtered.sort((first, second) => (second.popularity || 0) - (first.popularity || 0));
     }
 
     // Pass the fully manipulated dataset over to be rendered visually

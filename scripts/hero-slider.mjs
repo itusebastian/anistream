@@ -59,7 +59,7 @@ async function loadUpcomingSliderData() {
 
             // Pre-cache these top 5 detailed entries so clicking the Hero button opens the detailed page instantly!
             sliderAnimeData.forEach(anime => {
-                setCachedData(`anime_detail_${anime.mal_id}`, anime);
+                setCachedData(`anilist_detail_${anime.id}`, anime);
             });
 
             // Initialize rotation loop
@@ -164,7 +164,7 @@ function renderSlideContent(anime) {
             
             newPrimaryBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.location.href = `anime-details.html?id=${anime.mal_id}`;
+                window.location.href = `anime-details.html?anilistId=${anime.id}`;
             });
         }
 

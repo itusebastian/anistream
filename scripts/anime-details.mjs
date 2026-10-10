@@ -26,18 +26,18 @@ export async function initAnimeDetails() {
 
     // Parse URL parameter tracking token (e.g., ?id=5114)
     const params = new URLSearchParams(window.location.search);
-    let animeId = params.get('id');
+    const anilistId = params.get('anilistId');
+    let animeId = anilistId ?? params.get('id');
 
     // Fallback profile default (Fullmetal Alchemist: Brotherhood) if no ID parameter is found
-    if (!animeId) {
+    if (animeId === null) {
         animeId = '5114';
         // Silently updates the browser address bar without triggering a page reload
         window.history.replaceState(null, '', '?id=5114'); 
     }
 
     try {
-        // Fetch raw details profile from Jikan wrapper API
-        const anime = await fetchAnimeById(animeId);
+        const anime = await fetchAnimeById(animeId, anilistId !== null ? 'anilist' : 'mal');
         if (!anime) throw new Error("Anime structural payload empty.");
 
         // Hand off clean data payload to the DOM renderer
@@ -65,7 +65,7 @@ function renderDetails(anime) {
     document.title = `${cleanTitle} — AniStream`;
 
     // Map primary visual asset endpoints
-    document.getElementById('bannerImage').src = imageUrl;
+    document.getElementById('bannerImage').src = anime.banner_image || imageUrl;
     document.getElementById('bannerImage').alt = `${cleanTitle} Banner`;
     document.getElementById('posterImage').src = imageUrl;
     document.getElementById('posterImage').alt = `${cleanTitle} Poster`;
