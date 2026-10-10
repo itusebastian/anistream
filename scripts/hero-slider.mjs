@@ -1,4 +1,4 @@
-import { fetchUpcomingAnime } from './api.mjs';
+import { fetchUpcomingAnime, setCachedData } from './api.mjs';
 import { escapeHTML, getAnimeImageUrl, getAnimeTitle, truncateString } from './utils.mjs';
 
 // Module state management variables
@@ -11,6 +11,7 @@ let sliderInterval = null;  // Reference pointer to the setInterval timer for cl
  * and initializes the parallax effect if the element exists on the current page.
  */
 export function initHeroSlider() {
+    if (!document.querySelector('.hero-section')) return;
     initHeroParallax(); // Run the parallax setup cleanly inside its home component
     loadUpcomingSliderData();
 }
@@ -58,10 +59,7 @@ async function loadUpcomingSliderData() {
 
             // Pre-cache these top 5 detailed entries so clicking the Hero button opens the detailed page instantly!
             sliderAnimeData.forEach(anime => {
-                localStorage.setItem(`anime_detail_${anime.mal_id}`, JSON.stringify({
-                    data: anime,
-                    timestamp: Date.now()
-                }));
+                setCachedData(`anime_detail_${anime.mal_id}`, anime);
             });
 
             // Initialize rotation loop

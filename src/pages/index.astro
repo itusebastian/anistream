@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+    title="AniStream — Discover & Track Your Favorite Anime"
+    description="Discover anime, browse the current season, and explore upcoming releases."
+    activePage="home"
+>
+        <section class="hero-section">
+            <!-- Hero Background Image -->
+            <div class="hero-image-wrapper">
+                <img src="https://cdn.myanimelist.net/images/anime/1133/156346l.jpg" alt="Featured Anime">
+            </div>
+
+            <!-- Bottom fade -->
+            <div class="hero-fade-bottom"></div>
+            <!-- Left fade for text readability -->
+            <div class="hero-fade-left"></div>
+
+            <!-- Hero Content -->
+            <div class="hero-content">
+                <div class="hero-text">
+
+                    <!-- Current Season Tag -->
+                    <div class="season-tag">
+                        <span class="glow-dot">●</span>
+                        <span class="season-tag-text">Anticipated Upcoming Hype</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="hero-title">Saga of Tanya the Evil II</h1>
+
+                    <div class="hero-meta-row">
+                        <span class="hero-meta-item">TV Series</span>
+                        <span class="hero-meta-item">Action, Military, Fantasy</span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="hero-description">Second season of Youjo Senki.</p>
+                    <!-- CTA Button -->
+                    <div class="hero-actions">
+                        <button class="cta-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="M9 9.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997A1 1 0 0 1 9 14.996z"/><circle cx="12" cy="12" r="10"/></svg>
+                            View Details
+                        </button>
+                        
+                    </div>
+                </div>
+
+                <div class="hero-poster-box">
+                    <img src="https://cdn.myanimelist.net/images/anime/1133/156346l.jpg" alt="Featured Poster Portrait">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============ SECTION 2: LATEST EPISODE DROPS ============ -->
+        <section class="latest-section">
+            <div class="latest-container">
+            
+            <!-- Section Header -->
+            <div class="section-header">
+                <div class="section-line"></div>
+                <h2 class="section-title">Trending This Season</h2>
+            </div>
+
+            <!-- Anime Grid -->
+            <div id="animeGrid" class="anime-grid">
+                <!-- Cards injected by JS -->
+            </div>
+
+            </div>
+        </section>
+</BaseLayout>
+
+<script>
+    import { initHeroSlider } from '../../scripts/hero-slider.mjs';
+    import { initAnimeGrid } from '../../scripts/anime-grid.mjs';
+
+    initHeroSlider();
+    initAnimeGrid();
+</script>

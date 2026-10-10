@@ -1,4 +1,4 @@
-import { fetchCurrentAnime } from "./api.mjs";
+import { fetchCurrentAnime, setCachedData } from "./api.mjs";
 import { escapeHTML, getAnimeImageUrl, getAnimeTitle, createGenreTagsHTML, getCurrentSeasonTitle, removeDuplicates } from "./utils.mjs";
 
 /**
@@ -103,7 +103,7 @@ export async function initBrowseCatalog() {
 
       // Optimization: Cache full data payloads to LocalStorage.
       // This prevents needing another network request when navigating to the details page.
-      localStorage.setItem(`anime_detail_${anime.mal_id}`, JSON.stringify({ data: anime, timestamp: Date.now() }));
+      setCachedData(`anime_detail_${anime.mal_id}`, anime);
       
       grid.appendChild(card);
     });

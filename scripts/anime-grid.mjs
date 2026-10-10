@@ -1,4 +1,4 @@
-import { fetchCurrentAnime } from "./api.mjs";
+import { fetchCurrentAnime, setCachedData } from "./api.mjs";
 import { createGenreTagsHTML, escapeHTML, getAnimeImageUrl, getAnimeTitle, removeDuplicates, truncateString } from "./utils.mjs";
 
 /**
@@ -10,7 +10,7 @@ export async function initAnimeGrid() {
     const grid = document.getElementById('animeGrid');
 
     // Guard clause: Exit early if the grid element doesn't exist on the current page
-    if (!grid) return;
+    if (!grid || !document.querySelector('.hero-section')) return;
 
     try {
         // Fetch the list of currently streaming anime from the API
@@ -76,7 +76,7 @@ export async function initAnimeGrid() {
             })
 
             // Pre-cache individual profile tokens to localStorage so the detailed layout works instantly
-            localStorage.setItem(`anime_detail_${anime.mal_id}`, JSON.stringify({ data: anime, timestamp: Date.now() }));
+            setCachedData(`anime_detail_${anime.mal_id}`, anime);
 
             // Append the fully constructed card to the grid container
             grid.appendChild(card);

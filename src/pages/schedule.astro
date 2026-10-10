@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+    title="Anime Schedule | AniStream"
+    description="Explore the weekly anime broadcast schedule for the current season. Times are shown in JST."
+    activePage="schedule"
+    mainClass="page-main"
+>
+        <div class="page-container">
+
+            <div class="header-wrapper">
+                <div class="heading-title-row">
+                    <div class="section-line"></div>
+                    <h1 class="main-title">Weekly Release Schedule</h1>
+                </div>
+                <p class="page-subtitle">Stay updated with the exact broadcasting times for current seasonal titles</p>
+            </div>
+
+            <div class="day-tabs-scroll-container">
+                <div id="tabsContainer" class="day-tabs-wrapper">
+                    <button class="day-tab active" onclick="selectDay('mon', this)">
+                        <span class="day-name-full">Monday</span>
+                        <span class="day-name-short">Mon</span>
+                    </button>
+                    <button class="day-tab" onclick="selectDay('tue', this)">
+                        <span class="day-name-full">Tuesday</span>
+                        <span class="day-name-short">Tue</span>
+                    </button>
+                    <button class="day-tab" onclick="selectDay('wed', this)">
+                        <span class="day-name-full">Wednesday</span>
+                        <span class="day-name-short">Wed</span>
+                    </button>
+                    <button class="day-tab" onclick="selectDay('thu', this)">
+                        <span class="day-name-full">Thursday</span>
+                        <span class="day-name-short">Thu</span>
+                    </button>
+                    <button class="day-tab" onclick="selectDay('fri', this)">
+                        <span class="day-name-full">Friday</span>
+                        <span class="day-name-short">Fri</span>
+                    </button>
+                    <button class="day-tab" onclick="selectDay('sat', this)">
+                        <span class="day-name-full">Saturday</span>
+                        <span class="day-name-short">Sat</span>
+                    </button>
+                    <button class="day-tab" onclick="selectDay('sun', this)">
+                        <span class="day-name-full">Sunday</span>
+                        <span class="day-name-short">Sun</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="scheduleGrid" class="anime-grid grid-layout schedule-results-grid-animation">
+                </div>
+
+        </div>
+</BaseLayout>
+
+<script>
+    import { initAnimeSchedule } from '../../scripts/schedule.mjs';
+
+    initAnimeSchedule();
+</script>
