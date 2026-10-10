@@ -23,12 +23,28 @@ The build generates deployable static files in `dist/`, preserving the existing 
 
 ## Project Structure
 
-- `src/pages/`: Astro page templates
+- `src/pages/`: page content, layout props, and page-specific browser scripts
+- `src/layouts/BaseLayout.astro`: shared document shell, global styles, and content slots
+- `src/components/`: shared metadata, navigation, and footer
 - `scripts/`: bundled browser modules and the shared API client
 - `styles/`: shared styles bundled by Astro
 - `public/`: images and the GitHub Pages custom-domain `CNAME`
 - `tests/`: API regression tests using Node's built-in test runner
 - `.github/workflows/deploy.yml`: test, build, and deploy workflow
+
+## Learning the Astro Structure
+
+Start with `src/pages/browse.astro`. Its frontmatter imports `BaseLayout`, and the template passes a title, description, active navigation item, and main wrapper class as props. The children inside `<BaseLayout>` appear where the layout renders `<slot />`. This is the equivalent of a Jekyll layout's content placeholder.
+
+`BaseLayout` owns the HTML document and composes `PageHead`, `SiteHeader`, and `SiteFooter`. These are ordinary Astro components, equivalent to reusable includes. Their `Props` interfaces provide editor validation and autocomplete. To change metadata defaults, edit `PageHead`; to change navigation labels or destinations, edit the links array in `SiteHeader`. Canonical and social image URLs use the configured site and base path instead of a hard-coded deployment address.
+
+The named `<slot name="head" />` supports page-specific head additions. For example, a page can put `<meta name="theme-color" content="#16161f" slot="head" />` inside its layout. Avoid duplicating a tag already supplied by `PageHead`.
+
+Code between `---` markers runs during the static build, not in the visitor's browser. The footer year and navigation markup are generated then. Browser behavior belongs in `<script>` blocks: the header initializes its own menu/search modules, and each page initializes only its own data renderer. Astro bundles these imports automatically; a separate all-pages bootstrap is no longer needed. The site intentionally uses ordinary page navigation, not client-side routing.
+
+The shared design remains in the global stylesheets. When adding a self-contained component, its own `<style>` block is scoped by Astro by default. Prefer global styles for shared design rules and scoped styles for component-specific presentation.
+
+Jikan is still fetched in the browser. Moving a fetch into Astro frontmatter would instead create a snapshot at build time; it would need scheduled rebuilds and an outage fallback. An Astro template does not rerender when browser data arrives, so live search and result cards remain browser-rendered. React or another framework is optional, not required for these interactions.
 
 ## GitHub Pages
 
