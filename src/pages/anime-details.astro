@@ -1,95 +1,12 @@
 ---
-import '../../styles/base.css';
-import '../../styles/larger.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
-    <title id="metaTitle">Anime Details — AniStream</title>
-    <meta name="description" content="Explore detailed information, genres, synopsis, production stats, and watch trailers for this anime on AniStream.">
-    <meta name="author" content="Sebastián Iturralde">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Facebook / Discord (Social Media Metadata Fallbacks) -->
-    <meta property="og:type" content="video.tv_show">
-    <meta property="og:title" id="ogTitle" content="Anime Details — AniStream">
-    <meta property="og:description" id="ogDescription" content="Explore detailed information, synopsis, and watch trailers for this anime on AniStream.">
-    <meta property="og:url" content="https://byulabs.github.io/wdd231/final/anime-details.html">
-    <meta property="og:image" id="ogImage" content="https://byulabs.github.io/wdd231/final/images/anistream-og-banner.jpg">
-    <meta property="og:site_name" content="AniStream">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" id="twitterTitle" content="Anime Details — AniStream">
-    <meta name="twitter:description" id="twitterDescription" content="Explore detailed information, synopsis, and watch trailers for this anime on AniStream.">
-    <meta name="twitter:image" id="twitterImage" content="https://byulabs.github.io/wdd231/final/images/anistream-og-banner.jpg">
-
-    <!-- Performance & Network Optimizations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://api.jikan.moe">
-
-    <!-- Typography & Stylesheets -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Application Initialization Orchestrator -->
-    <script src="../../scripts/main.mjs"></script>
-</head>
-<body>
-
-    <!-- ============ HEADER / NAVIGATION ============ -->
-    <header>
-        <div class="header-container">
-
-            <!-- Logo -->
-            <a href="index.html" class="logo">
-                <span class="logo-text">Ani<span class="logo-accent">Stream</span></span>
-            </a>
-
-            <!-- Center Nav Links (Desktop) -->
-            <nav class="desktop-nav">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="browse.html" class="nav-link active">Browse Season</a>
-                <a href="schedule.html" class="nav-link">Schedule</a>
-            </nav>
-
-            <!-- Right Side: Search Button -->
-            <div class="search-container">
-                <button class="search-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-sm"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                    <span>Search anime...</span>
-                </button>
-            </div>
-
-            <!-- Mobile: Search + Hamburger -->
-            <div class="mobile-controls">
-                <button class="mobile-search-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-md"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
-                </button>
-                <button id="menuToggle" class="mobile-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-lg"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Mobile Slide Menu -->
-    <div id="mobileOverlay"></div>
-    <nav id="mobileMenu" class="mobile-menu">
-        <button id="mobileMenuClose" class="mobile-menu-close" aria-label="Close mobile menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-lg"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-        <a href="index.html">Home</a>
-        <a href="browse.html">Browse Season</a>
-        <a href="schedule.html">Schedule</a>
-    </nav>
-
-    <!-- ============ CONTENT ============ -->
-    <main>
+<BaseLayout
+    title="Anime Details | AniStream"
+    description="Explore anime information, genres, synopsis, production details, and trailers."
+    activePage="browse"
+    ogType="video.tv_show"
+>
         <section class="cinematic-section">
             <div class="backdrop-banner-wrapper">
                 <img id="bannerImage" class="banner-image" src="https://cdn.myanimelist.net/images/anime/1208/94745.jpg" alt="Fullmetal Alchemist: Brotherhood Banner">
@@ -170,16 +87,10 @@ import '../../styles/larger.css';
                 </div>
             </div>
         </div>
-    </main>
+</BaseLayout>
 
-    <!-- ============ FOOTER ============ -->
-    <footer>
-        <div class="footer-container">
-            <a href="#" class="footer-logo">
-                Ani<span class="footer-logo-accent">Stream</span>
-            </a>
-            <p class="footer-text">&copy; 2026 AniStream. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-</html>
+<script>
+    import { initAnimeDetails } from '../../scripts/anime-details.mjs';
+
+    initAnimeDetails();
+</script>
