@@ -1,45 +1,54 @@
 # Anistream
 
-A lightweight static anime catalog web app — browsable grid, search, schedule, and details pages.
-
-## Features
-
-- Browse anime catalog with a responsive grid
-- Search and header search across titles
-- Episode schedule view
-- Individual anime detail pages
-
-## Project Structure
-
-- `index.html` — homepage / hero
-- `browse.html` — catalog browsing
-- `search.html` — search results
-- `schedule.html` — schedule view
-- `anime-details.html` — detail page template
-- `scripts/` — ES module JavaScript files (e.g. `main.mjs`, `api.mjs`)
-- `styles/` — CSS files
-- `images/` — static assets
-
-## Usage
-
-Open `index.html` directly in a browser (for simple viewing), or serve the folder with a local static server for module support:
-
-```bash
-# Python 3
-python3 -m http.server 8000
-
-# Then open http://localhost:8000 in your browser
-```
+A static anime catalog built with Astro: seasonal browsing, search, weekly broadcast schedules, and anime details. Data is fetched from the public Jikan API in the browser; no backend or API key is required.
 
 ## Development
 
-- JavaScript modules live under `scripts/` and are imported by the HTML pages.
-- Edit files and refresh the browser; use a local server to avoid CORS/module issues.
+Requires Node.js 22.12 or newer.
 
-## Contributing
+```bash
+npm ci
+npm run dev
+```
 
-Feel free to open issues or pull requests. Add a `LICENSE` file if you want to set a license.
+Open the local URL printed by Astro. Do not open templates directly with `file://`.
 
-## Notes
+```bash
+npm test
+npm run build
+npm run preview
+```
 
-- No build step is required — this is a static site using native ES modules.
+The build generates deployable static files in `dist/`, preserving the existing `index.html`, `browse.html`, `search.html`, `schedule.html`, and `anime-details.html?id=...` URLs.
+
+## Project Structure
+
+- `src/pages/`: Astro page templates
+- `scripts/`: bundled browser modules and the shared API client
+- `styles/`: shared styles bundled by Astro
+- `public/`: images and the GitHub Pages custom-domain `CNAME`
+- `tests/`: API regression tests using Node's built-in test runner
+- `.github/workflows/deploy.yml`: test, build, and deploy workflow
+
+## GitHub Pages
+
+1. In the repository's **Settings > Pages**, select **GitHub Actions** as the build and deployment source.
+2. Keep `anistream.itusebastian.com` configured as the custom domain, with its DNS pointing to GitHub Pages.
+3. Push these changes to `main`, or run **Deploy to GitHub Pages** from the Actions tab.
+
+The workflow reads the site's origin and base path from GitHub Pages settings. It uploads only `dist/`. No server adapter or SPA fallback is needed.
+
+To use the default `https://itusebastian.github.io/anistream/` address instead, remove `public/CNAME` and clear the custom domain in Pages settings. To check that configuration locally:
+
+```bash
+SITE_URL=https://itusebastian.github.io BASE_PATH=/anistream npm run build
+BASE_PATH=/anistream npm run preview
+```
+
+## API Troubleshooting
+
+The API client caches lists for two hours and details for 24 hours, deduplicates concurrent requests, spaces network requests, retries HTTP 429 and server errors, and times out individual requests after 15 seconds. Browser storage is optional and cannot block rendering.
+
+If data does not load, inspect the browser's Network and Console panels for requests to `https://api.jikan.moe/v4`. Errors now distinguish HTTP failures from an unreachable API or timeout. Check Jikan's service status and browser extensions, DNS, VPN, or firewall restrictions. A static GitHub Pages site cannot bypass an upstream outage or browser network restrictions.
+
+Browse and schedule currently use the first page of the seasonal endpoint, not the complete catalog. Broadcast times are shown in JST.
